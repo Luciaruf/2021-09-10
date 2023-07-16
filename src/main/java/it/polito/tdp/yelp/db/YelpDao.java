@@ -111,5 +111,139 @@ public class YelpDao {
 		}
 	}
 	
+	public List<String> getCities(){
+		String sql = "SELECT DISTINCT b.city as city "
+				+ "FROM business b "
+				+ "ORDER BY b.city ASC ";
+		List<String> result = new ArrayList<String>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				result.add(res.getString("city"));
+			}
+			res.close();
+			st.close();
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<String> getVertices(String città){
+		String sql = "SELECT DISTINCT b.`business_name` as business "
+				+ "FROM business b "
+				+ "WHERE b.city =? ";
+		List<String> result = new ArrayList<String>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, città);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				result.add(res.getString("business"));
+			}
+			res.close();
+			st.close();
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Double getLatitude(String businessId) {
+		String sql = "SELECT b.`latitude` "
+				+ "FROM business b "
+				+ "WHERE b.`business_id`=? ";
+		Double result = 0.0;
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, businessId);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				result = res.getDouble("latitude");
+			}
+			res.close();
+			st.close();
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Double getLongitude(String businessId) {
+		String sql = "SELECT b.`longitude` "
+				+ "FROM business b "
+				+ "WHERE b.`business_id`=? ";
+		Double result = 0.0;
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, businessId);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				result = res.getDouble("longitude");
+			}
+			res.close();
+			st.close();
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Business trovato(String nome) {
+		String sql = "SELECT b.* "
+				+ "FROM business b "
+				+ "WHERE b.business_name = ? ";
+		Business result = null;
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, nome);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				result = new Business(res.getString("business_id"), 
+						res.getString("full_address"),
+						res.getString("active"),
+						res.getString("categories"),
+						res.getString("city"),
+						res.getInt("review_count"),
+						res.getString("business_name"),
+						res.getString("neighborhoods"),
+						res.getDouble("latitude"),
+						res.getDouble("longitude"),
+						res.getString("state"),
+						res.getDouble("stars"));;
+			}
+			res.close();
+			st.close();
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }
